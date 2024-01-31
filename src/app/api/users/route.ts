@@ -1,13 +1,13 @@
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
+
+import { authOptions } from "@/libs/auth";
 import {
   checkReviewExists,
   createReview,
   getUserData,
   updateReview,
 } from "@/libs/apis";
-import { authOptions } from "@/libs/auth";
-
-import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 
 export async function GET(req: Request, res: Response) {
   const session = await getServerSession(authOptions);
@@ -26,7 +26,7 @@ export async function GET(req: Request, res: Response) {
   }
 }
 
-export async function POTS(req: Request, res: Response) {
+export async function POST(req: Request, res: Response) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -42,13 +42,13 @@ export async function POTS(req: Request, res: Response) {
   const userId = session.user.id;
 
   try {
-    const alredyExists = await checkReviewExists(userId, roomId);
+    const alreadyExists = await checkReviewExists(userId, roomId);
 
     let data;
 
-    if (alredyExists) {
+    if (alreadyExists) {
       data = await updateReview({
-        reviewId: alredyExists._id,
+        reviewId: alreadyExists._id,
         reviewText,
         userRating: ratingValue,
       });
@@ -60,9 +60,10 @@ export async function POTS(req: Request, res: Response) {
         userRating: ratingValue,
       });
     }
+
     return NextResponse.json(data, { status: 200, statusText: "Successful" });
   } catch (error: any) {
-    console.log("Error Updaiting", error);
+    console.log("Error Updating", error);
     return new NextResponse("Unable to create review", { status: 400 });
   }
 }
