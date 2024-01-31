@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, FC, SetStateAction } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,12 +10,12 @@ type Props = {
   checkoutDate: Date | null;
   setCheckoutDate: Dispatch<SetStateAction<Date | null>>;
   setAdults: Dispatch<SetStateAction<number>>;
-  setChildren: Dispatch<SetStateAction<number>>;
+  setNoOfChildren: Dispatch<SetStateAction<number>>;
   calcMinCheckoutDate: () => Date | null;
   price: number;
   discount: number;
   adults: number;
-  children: number;
+  noOfChildren: number;
   specialNote: string;
   isBooked: boolean;
   handleBookNowClick: () => void;
@@ -30,9 +32,9 @@ const BookRoomCta: FC<Props> = (props) => {
     setCheckoutDate,
     calcMinCheckoutDate,
     setAdults,
-    setChildren,
+    setNoOfChildren,
     adults,
-    children,
+    noOfChildren,
     isBooked,
     handleBookNowClick,
   } = props;
@@ -69,13 +71,13 @@ const BookRoomCta: FC<Props> = (props) => {
 
       <h4 className="my-8">{specialNote}</h4>
 
-      <div className="flex ">
+      <div className="flex">
         <div className="w-1/2 pr-2">
           <label
             htmlFor="check-in-date"
             className="block text-sm font-medium text-gray-900 dark:text-gray-400"
           >
-            Check In Date
+            Check In date
           </label>
           <DatePicker
             selected={checkinDate}
@@ -86,13 +88,12 @@ const BookRoomCta: FC<Props> = (props) => {
             className="w-full border text-black border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary"
           />
         </div>
-
         <div className="w-1/2 pl-2">
           <label
             htmlFor="check-out-date"
             className="block text-sm font-medium text-gray-900 dark:text-gray-400"
           >
-            Check Out Date
+            Check Out date
           </label>
           <DatePicker
             selected={checkoutDate}
@@ -124,7 +125,6 @@ const BookRoomCta: FC<Props> = (props) => {
             className="w-full border border-gray-300 rounded-lg p-2.5"
           />
         </div>
-
         <div className="w-1/2 pl-2">
           <label
             htmlFor="children"
@@ -135,8 +135,8 @@ const BookRoomCta: FC<Props> = (props) => {
           <input
             type="number"
             id="children"
-            value={children}
-            onChange={(e) => setChildren(+e.target.value)}
+            value={noOfChildren}
+            onChange={(e) => setNoOfChildren(+e.target.value)}
             min={0}
             max={3}
             className="w-full border border-gray-300 rounded-lg p-2.5"

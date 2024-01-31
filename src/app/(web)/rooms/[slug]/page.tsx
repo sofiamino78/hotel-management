@@ -1,17 +1,18 @@
 "use client";
 
-import { getRoom } from "@/libs/apis";
 import useSWR from "swr";
-import LoadingSpinner from "../../loading";
-import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiSmokeBomb } from "react-icons/gi";
-import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import axios from "axios";
+
+import { getRoom } from "@/libs/apis";
+import LoadingSpinner from "../../loading";
+import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
+import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
+import toast from "react-hot-toast";
 import { getStripe } from "@/libs/stripe";
 import RoomReview from "@/components/RoomReview/RoomReview";
 
@@ -23,14 +24,16 @@ const RoomDetails = (props: { params: { slug: string } }) => {
   const [checkinDate, setCheckinDate] = useState<Date | null>(null);
   const [checkoutDate, setCheckoutDate] = useState<Date | null>(null);
   const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const [noOfChildren, setNoOfChildren] = useState(0);
 
   const fetchRoom = async () => getRoom(slug);
+
   const { data: room, error, isLoading } = useSWR("/api/room", fetchRoom);
 
   if (error) throw new Error("Cannot fetch data");
   if (typeof room === "undefined" && !isLoading)
     throw new Error("Cannot fetch data");
+
   if (!room) return <LoadingSpinner />;
 
   const calcMinCheckoutDate = () => {
@@ -60,7 +63,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
         checkinDate,
         checkoutDate,
         adults,
-        children,
+        children: noOfChildren,
         numberOfDays,
         hotelRoomSlug,
       });
@@ -71,7 +74,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
         });
 
         if (result.error) {
-          toast.error("Pyament Failed");
+          toast.error("Payment Failed");
         }
       }
     } catch (error) {
@@ -123,7 +126,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                       key={amenity._key}
                       className="flex items-center md:my-0 my-1"
                     >
-                      <i className={`fa-solid ${amenity.icon} md:text-2xl`}></i>
+                      <i className={`fa-solid ${amenity.icon}`}></i>
                       <p className="text-xs md:text-base ml-2">
                         {amenity.amenity}
                       </p>
@@ -141,7 +144,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                   <div className="flex items-center my-1 md:my-0">
                     <LiaFireExtinguisherSolid />
                     <p className="ml-2 md:text-base text-xs">
-                      Fire Extinguisher
+                      Fire Extinguishers
                     </p>
                   </div>
                   <div className="flex items-center my-1 md:my-0">
@@ -159,9 +162,9 @@ const RoomDetails = (props: { params: { slug: string } }) => {
 
               <div className="shadow dark:shadow-white rounded-lg p-6">
                 <div className="items-center mb-4">
-                  <p className="md:text-lg font-semibold">Customer Reviwes</p>
+                  <p className="md:text-lg font-semibold">Customer Reviews</p>
                 </div>
-                <div className="grid grid-cls-1 mdgrid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <RoomReview roomId={room._id} />
                 </div>
               </div>
@@ -179,9 +182,9 @@ const RoomDetails = (props: { params: { slug: string } }) => {
               setCheckoutDate={setCheckoutDate}
               calcMinCheckoutDate={calcMinCheckoutDate}
               adults={adults}
-              children={children}
+              noOfChildren={noOfChildren}
               setAdults={setAdults}
-              setChildren={setChildren}
+              setNoOfChildren={setNoOfChildren}
               isBooked={room.isBooked}
               handleBookNowClick={handleBookNowClick}
             />
@@ -191,4 +194,5 @@ const RoomDetails = (props: { params: { slug: string } }) => {
     </div>
   );
 };
+
 export default RoomDetails;
